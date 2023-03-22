@@ -39,6 +39,9 @@ function App() {
         <p>player</p>
         <p>{currentTime} / {duration}</p>
         <audio ref={myRef} onTimeUpdate={handleTimeUpdate} controls src={song}></audio>
+        <div className='progressBar'>
+          <div className='progress' ></div>
+        </div>
         <button onClick={play}>play</button>
         <button onClick={stop}>stop</button>
       </header>
