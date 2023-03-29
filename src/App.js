@@ -4,14 +4,16 @@ import song from './audio/PARADISE (COLDPLAY) OK..mp3'
 
 function App() {
 
-  const myRef = useRef(null)
+  const songRef = useRef(null)
+  const [isLoaded, setIsLoaded] = useState(false)
   const [currentTime, setCurrentTime] = useState('00:00')
+  const [progressWidth, setProgressWidth] = useState(0)
 
   const play = () => {
-    myRef.current.play()
+    songRef.current.play()
   }
-  const stop = () => {
-    myRef.current.pause()
+  const pause = () => {
+    songRef.current.pause()
   }
 
   // хелпер перевода времени в красивое значение, получает на вход 1.540950495, возвращает 01:00
@@ -26,24 +28,41 @@ function App() {
 
   // функция обновления отображения времени
   const handleTimeUpdate = () => {
-    const time = myRef.current.currentTime
+    const time = songRef.current.currentTime
+    const percentProgress = time / songRef.current.duration * 100
     setCurrentTime(formatTime(time))
+    setProgressWidth(percentProgress)
   };
 
   // без знака вопроса сюда ничего не приходит и код выпадает в ошибку
-  const duration = formatTime(myRef.current?.duration)
+  const duration = isLoaded ? formatTime(songRef.current.duration) : '00:00'
+
+
+  const stylesInline = {
+    width: `${progressWidth}%`
+  }
+
+  // console.log('текущее', songRef.current?.currentTime)
+  // console.log('общее', songRef.current?.duration)
+  // console.log('=======')
+
 
   return (
     <div className="App">
       <header className="App-header">
         <p>player</p>
         <p>{currentTime} / {duration}</p>
-        <audio ref={myRef} onTimeUpdate={handleTimeUpdate} controls src={song}></audio>
+        <audio ref={songRef}
+               onLoadedMetadata={() => setIsLoaded(true)}
+               onTimeUpdate={handleTimeUpdate}
+               controls
+               src={song}>
+        </audio>
         <div className='progressBar'>
-          <div className='progress' ></div>
+          <div className='progress' style={stylesInline}></div>
         </div>
         <button onClick={play}>play</button>
-        <button onClick={stop}>stop</button>
+        <button onClick={pause}>pause</button>
       </header>
     </div>
   );
