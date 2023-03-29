@@ -6,7 +6,7 @@ function App() {
 
   const songRef = useRef(null)
   const [isLoaded, setIsLoaded] = useState(false)
-  const [currentTime, setCurrentTime] = useState('00:00')
+  const [currentDisplayTime, setCurrentDisplayTime] = useState('00:00')
   const [progressWidth, setProgressWidth] = useState(0)
 
   const play = () => {
@@ -26,40 +26,40 @@ function App() {
     return (`${formatMinutes}:${formatSeconds}`)
   }
 
-  // функция обновления отображения времени
+  // функция обновления отображения времени и прогресс бара
   const handleTimeUpdate = () => {
     const time = songRef.current.currentTime
-    const percentProgress = time / songRef.current.duration * 100
-    setCurrentTime(formatTime(time))
+    const percentProgress = (time / songRef.current.duration) * 100
+    setCurrentDisplayTime(formatTime(time))
     setProgressWidth(percentProgress)
   };
 
-  // без знака вопроса сюда ничего не приходит и код выпадает в ошибку
   const duration = isLoaded ? formatTime(songRef.current.duration) : '00:00'
 
+  const changeCurrentTime = (event)=> {
+    const progressBarWidth = event.target.offsetWidth
+    const click = event.clientX - event.target.offsetLeft
+    const percentClicked = (click / progressBarWidth) * 100
+    const newTime = songRef.current.duration / 100 * percentClicked
 
-  const stylesInline = {
-    width: `${progressWidth}%`
+    songRef.current.currentTime = newTime
+    
+    console.log(newTime)
   }
-
-  // console.log('текущее', songRef.current?.currentTime)
-  // console.log('общее', songRef.current?.duration)
-  // console.log('=======')
-
 
   return (
     <div className="App">
       <header className="App-header">
         <p>player</p>
-        <p>{currentTime} / {duration}</p>
+        <p>{currentDisplayTime} / {duration}</p>
         <audio ref={songRef}
                onLoadedMetadata={() => setIsLoaded(true)}
                onTimeUpdate={handleTimeUpdate}
                controls
                src={song}>
         </audio>
-        <div className='progressBar'>
-          <div className='progress' style={stylesInline}></div>
+        <div className='progressBar' onClick={changeCurrentTime}>
+          <div className='progress' style={{width: `${progressWidth}%`}}></div>
         </div>
         <button onClick={play}>play</button>
         <button onClick={pause}>pause</button>
