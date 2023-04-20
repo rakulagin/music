@@ -1,19 +1,35 @@
 import React, {useState, useRef} from "react";
 import './App.css';
-import song from './audio/PARADISE (COLDPLAY) OK..mp3'
+
+
+import song1 from './audio/PARADISE (COLDPLAY) OK..mp3'
+import song2 from './audio/01. Тишина ванной комнаты (feat. My Automata).mp3'
+import song3 from './audio/02. Случайности (feat. My Automata).mp3'
+import song4 from './audio/03. Душевное состояние в ожидании чего-то хорошего (feat. My Automata).mp3'
+import song5 from './audio/04. Первая Любовь (feat. My Automata).mp3'
+import song6 from './audio/05. Характеры (feat. My Automata).mp3'
 
 function App() {
-
-  const songRef = useRef(null)
+  const [songs, setSongs] = useState([song1, song2, song3, song4, song5, song6]);
+  const audioRef = useRef(null)
   const [isLoaded, setIsLoaded] = useState(false)
   const [currentDisplayTime, setCurrentDisplayTime] = useState('00:00')
   const [progressWidth, setProgressWidth] = useState(0)
 
+  const handleLoadAudio = (event)=> {
+    setIsLoaded(true)
+
+  }
+
+
+
+
+
   const play = () => {
-    songRef.current.play()
+    audioRef.current.play()
   }
   const pause = () => {
-    songRef.current.pause()
+    audioRef.current.pause()
   }
 
   // хелпер перевода времени в красивое значение, получает на вход 1.540950495, возвращает 01:00
@@ -28,30 +44,23 @@ function App() {
 
   // функция обновления отображения времени и прогресс бара
   const handleTimeUpdate = () => {
-    const time = songRef.current.currentTime
-    const percentProgress = (time / songRef.current.duration) * 100
+    const time = audioRef.current.currentTime
+    const percentProgress = (time / audioRef.current.duration) * 100
     setCurrentDisplayTime(formatTime(time))
     setProgressWidth(percentProgress)
   };
 
-  const duration = isLoaded ? formatTime(songRef.current.duration) : '00:00'
+  const duration = isLoaded ? formatTime(audioRef.current.duration) : '00:00'
 
   const changeCurrentTime = (event)=> {
-    // Тут проблема. если кликнуть на голубую область (отмотать назад)
+    // Тут проблема. Если кликнуть на голубую область (отмотать назад)
     // То, offsetWidth считается не по всей белой полоске, а по голубой
     // const progressBarWidth = event.target.offsetWidth
     const progressBarWidth = 650
     const click = event.clientX - event.target.offsetLeft
     const percentClicked = (click / progressBarWidth) * 100
-    const newTime = songRef.current.duration / 100 * percentClicked
-
-    songRef.current.currentTime = newTime
-    
-    console.log('newTime', newTime)
-    console.log('progressBarWidth', progressBarWidth)
-    console.log('click', click)
-    console.log('percentClicked', percentClicked)
-    console.log('=====')
+    const newTime = audioRef.current.duration / 100 * percentClicked
+    audioRef.current.currentTime = newTime
   }
 
   return (
@@ -59,11 +68,11 @@ function App() {
       <header className="App-header">
         <p>player</p>
         <p>{currentDisplayTime} / {duration}</p>
-        <audio ref={songRef}
-               onLoadedMetadata={() => setIsLoaded(true)}
+        <audio ref={audioRef}
+               onLoadedMetadata={handleLoadAudio}
                onTimeUpdate={handleTimeUpdate}
                controls
-               src={song}>
+               src={song2}>
         </audio>
         <div className='progressBar' onClick={changeCurrentTime}>
           <div className='progress' style={{width: `${progressWidth}%`}}></div>
