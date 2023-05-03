@@ -105,7 +105,7 @@ function App() {
                // onVolumeChange={handleVolumeChange}
                onLoadedMetadata={handleLoadAudio}
                onTimeUpdate={handleTimeUpdate}
-               // controls
+               controls
                src={songsList[currentSongIndex].src}>
         </audio>
         <div className='progressBar' onClick={changeCurrentTime}>
