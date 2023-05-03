@@ -25,15 +25,22 @@ function App() {
     audioRef.current.pause()
   }
   const stop = ()=> {
+    //переделать
     audioRef.current.pause()
     audioRef.current.currentTime=0
   }
   const next = () => {
+    setIsLoaded(false)
     if(currentSongIndex+1 < songsList.length) {
       setCurrentSongIndex(currentSongIndex+1)
     } else {
       setCurrentSongIndex(0)
     }
+    // audioRef.current.src = songsList[2].src
+    console.log(audioRef.current)
+    setTimeout( ()=>{
+    audioRef.current.play()
+    }, 0)
   }
   const prev = ()=> {
     if (currentSongIndex === 0) {
@@ -101,12 +108,11 @@ function App() {
         <p>{songsList[currentSongIndex].artist} - {songsList[currentSongIndex].title}</p>
         <p>{currentDisplayTime} / {duration}</p>
         <audio ref={audioRef}
-               autoPlay={true}
+               // autoPlay={true}
                // onVolumeChange={handleVolumeChange}
                onLoadedMetadata={handleLoadAudio}
                onTimeUpdate={handleTimeUpdate}
-               // controls
-          //test content
+               controls
                src={songsList[currentSongIndex].src}>
         </audio>
         <div className='progressBar' onClick={changeCurrentTime}>
