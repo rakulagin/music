@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import './App.css';
 import {songsList} from "./audio/audio";
 
@@ -9,10 +9,11 @@ function App() {
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
 
   const audioRef = useRef(null)
+  const volumeRef = useRef(null)
   const [isLoaded, setIsLoaded] = useState(false)
   const [currentDisplayTime, setCurrentDisplayTime] = useState('00:00')
   const [progressWidth, setProgressWidth] = useState(0)
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(0.5);
 
   const [played, setPlayed] = useState(false);
 
@@ -21,10 +22,8 @@ function App() {
   }
 
   const handleVolumeChange = (event)=> {
-    console.log("volume внутри 1", volume)
-    audioRef.current.volume = volume
+    audioRef.current.volume = event.target.value;
     setVolume(event.target.value);
-    console.log("volume внутри 2", volume)
   }
 
   const play = () => {
@@ -109,12 +108,18 @@ function App() {
     audioRef.current.currentTime = newTime
   }
 
+
+  useEffect(() => {
+    volumeRef.current.value = volume
+    console.log(volume)
+  }, [volume]);
+
+
   // console.log('songsList.length', songsList.length)
   // console.log('currentSong', currentSongIndex)
   // console.log('now playing---', songsList[currentSongIndex].artist, songsList[currentSongIndex].title)
   // console.log('currentDisplayTime', currentDisplayTime)
-  // console.log("volume outside", volume)
-  console.log(played)
+
 
 
   return (
@@ -143,12 +148,13 @@ function App() {
         <button onClick={prev}>prev</button>
         <button onClick={mute}>mute</button>
         <input
+          ref={volumeRef}
           type="range"
           min="0"
           max="1"
           step="0.1"
           value={volume}
-          onChange={handleVolumeChange}
+          onChange={(e)=>handleVolumeChange(e)}
         />
       </header>
     </div>
