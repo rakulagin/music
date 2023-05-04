@@ -17,6 +17,7 @@ function App() {
 
   const [played, setPlayed] = useState(false);
 
+
   const handleLoadAudio = (event)=> {
     setIsLoaded(true)
   }
@@ -67,6 +68,14 @@ function App() {
     }
   }
 
+  const mute = () => {
+    if (audioRef.current.volume === 0) {
+      audioRef.current.volume = 1
+    } else {
+      audioRef.current.volume = 0
+    }
+  }
+
   // хелпер перевода времени в красивое значение, получает на вход 1.540950495, возвращает 01:00
   const formatTime = (time) => {
     if (!time) return '00:00'
@@ -87,13 +96,7 @@ function App() {
 
 
 
-  const mute = () => {
-    if (audioRef.current.volume === 0) {
-      audioRef.current.volume = 1
-    } else {
-      audioRef.current.volume = 0
-    }
-  }
+
 
   const duration = isLoaded ? formatTime(audioRef.current.duration) : '00:00'
 
@@ -111,7 +114,6 @@ function App() {
 
   useEffect(() => {
     volumeRef.current.value = volume
-    console.log(volume)
   }, [volume]);
 
 
