@@ -14,20 +14,31 @@ function App() {
   const [progressWidth, setProgressWidth] = useState(0)
   const [volume, setVolume] = useState(1);
 
+  const [played, setPlayed] = useState(false);
+
   const handleLoadAudio = (event)=> {
     setIsLoaded(true)
   }
 
+  const handleVolumeChange = (event)=> {
+    console.log("volume внутри 1", volume)
+    audioRef.current.volume = volume
+    setVolume(event.target.value);
+    console.log("volume внутри 2", volume)
+  }
+
   const play = () => {
     audioRef.current.play()
+    setPlayed(true)
   }
   const pause = () => {
     audioRef.current.pause()
+    setPlayed(false)
   }
   const stop = ()=> {
-    //переделать
-    audioRef.current.pause()
+    pause()
     audioRef.current.currentTime=0
+    setPlayed(false)
   }
   const next = () => {
     setIsLoaded(false)
@@ -36,18 +47,24 @@ function App() {
     } else {
       setCurrentSongIndex(0)
     }
-    // audioRef.current.src = songsList[2].src
-    console.log(audioRef.current)
+    if(played) {
     setTimeout( ()=>{
     audioRef.current.play()
     }, 0)
+    }
   }
   const prev = ()=> {
+    setIsLoaded(false)
     if (currentSongIndex === 0) {
       console.log('000')
       setCurrentSongIndex(songsList.length-1)
     } else {
       setCurrentSongIndex(currentSongIndex-1)
+    }
+    if(played) {
+      setTimeout( ()=>{
+        audioRef.current.play()
+      }, 0)
     }
   }
 
@@ -69,10 +86,7 @@ function App() {
     setProgressWidth(percentProgress)
   };
 
-  const handleVolumeChange = (event)=> {
-    // setVolume(event.target.value);
-    // audioRef.current.volume = 0
-  }
+
 
   const mute = () => {
     if (audioRef.current.volume === 0) {
@@ -99,7 +113,9 @@ function App() {
   // console.log('currentSong', currentSongIndex)
   // console.log('now playing---', songsList[currentSongIndex].artist, songsList[currentSongIndex].title)
   // console.log('currentDisplayTime', currentDisplayTime)
-  console.log('volume', volume)
+  // console.log("volume outside", volume)
+  console.log(played)
+
 
   return (
     <div className="App">
@@ -108,7 +124,6 @@ function App() {
         <p>{songsList[currentSongIndex].artist} - {songsList[currentSongIndex].title}</p>
         <p>{currentDisplayTime} / {duration}</p>
         <audio ref={audioRef}
-               // autoPlay={true}
                // onVolumeChange={handleVolumeChange}
                onLoadedMetadata={handleLoadAudio}
                onTimeUpdate={handleTimeUpdate}
@@ -118,8 +133,11 @@ function App() {
         <div className='progressBar' onClick={changeCurrentTime}>
           <div className='progress' style={{width: `${progressWidth}%`}}></div>
         </div>
-        <button onClick={play}>play</button>
-        <button onClick={pause}>pause</button>
+        {played ? (
+          <button onClick={pause}>pause</button>
+        ) : (
+          <button onClick={play}>play</button>
+        )}
         <button onClick={stop}>stop</button>
         <button onClick={next}>next</button>
         <button onClick={prev}>prev</button>
