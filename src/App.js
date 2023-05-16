@@ -128,6 +128,11 @@ function App() {
     <div className="App">
       <header className="App-header">
         <p>player</p>
+        {songsList.map((song, id) => (
+          <div key={id}>
+            {song.artist} - {song.title}
+          </div>
+        ))}
         <p>{songsList[currentSongIndex].artist} - {songsList[currentSongIndex].title}</p>
         <p>{currentDisplayTime} / {duration}</p>
         <audio ref={audioRef}
