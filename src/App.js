@@ -1,6 +1,7 @@
 import React, {useState, useRef, useEffect} from "react";
 import './App.css';
 import {songsList} from "./audio/audio";
+import Playlist from "./components/Playlist/Playlist";
 
 
 function App() {
@@ -56,7 +57,6 @@ function App() {
   const prev = ()=> {
     setIsLoaded(false)
     if (currentSongIndex === 0) {
-      console.log('000')
       setCurrentSongIndex(songsList.length-1)
     } else {
       setCurrentSongIndex(currentSongIndex-1)
@@ -128,11 +128,15 @@ function App() {
     <div className="App">
       <header className="App-header">
         <p>player</p>
-        {songsList.map((song, id) => (
-          <div key={id}>
-            {song.artist} - {song.title}
-          </div>
-        ))}
+        <Playlist
+          songsList={songsList}
+          currentSongIndex={currentSongIndex}
+        />
+        {/*{songsList.map((song, id) => (*/}
+        {/*  <div key={id}>*/}
+        {/*    {song.artist} - {song.title}*/}
+        {/*  </div>*/}
+        {/*))}*/}
         <p>{songsList[currentSongIndex].artist} - {songsList[currentSongIndex].title}</p>
         <p>{currentDisplayTime} / {duration}</p>
         <audio ref={audioRef}
