@@ -1,0 +1,30 @@
+.slider__wrp {
+    height: 150px;
+}
+
+.rc-slider {
+
+}
+
+.rc-slider-rail {
+    width: 20px !important;
+    border-radius: unset;
+    background: white;
+}
+
+.rc-slider-track {
+    width: 20px !important;
+    border-radius: unset;
+    background: lightblue;
+}
+
+.rc-slider-handle {
+    border-radius: unset;
+    width: 20px;
+    height: 20px;
+    cursor: auto;
+    /*margin-left: -8px;*/
+    margin-left: 0 !important;
+    background: #5eb3d0;
+    opacity: 1;
+}

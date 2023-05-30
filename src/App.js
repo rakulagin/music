@@ -2,6 +2,7 @@ import React, {useState, useRef, useEffect} from "react";
 import './App.css';
 import {songsList} from "./audio/audio";
 import Playlist from "./components/Playlist/Playlist";
+import VolumeSlider from "./components/VolumeSlider/VolumeSlider";
 
 
 function App() {
@@ -10,13 +11,13 @@ function App() {
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
 
   const audioRef = useRef(null)
-  const volumeRef = useRef(null)
   const [isLoaded, setIsLoaded] = useState(false)
   const [currentDisplayTime, setCurrentDisplayTime] = useState('00:00')
   const [progressWidth, setProgressWidth] = useState(0)
   const [volume, setVolume] = useState(0.5);
 
   const [played, setPlayed] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
 
 
   const handleLoadAudio = (event)=> {
@@ -24,8 +25,9 @@ function App() {
   }
 
   const handleVolumeChange = (event)=> {
-    audioRef.current.volume = event.target.value;
-    setVolume(event.target.value);
+    audioRef.current.volume = event;
+    setVolume(event);
+    setIsMuted(false)
   }
 
   const play = () => {
@@ -67,12 +69,15 @@ function App() {
       }, 0)
     }
   }
-
   const mute = () => {
     if (audioRef.current.volume === 0) {
-      audioRef.current.volume = 1
+      audioRef.current.volume = 0.3
+      setVolume(0.3)
+      setIsMuted(false)
     } else {
       audioRef.current.volume = 0
+      setVolume(0)
+      setIsMuted(true)
     }
   }
 
@@ -94,10 +99,6 @@ function App() {
     setProgressWidth(percentProgress)
   };
 
-
-
-
-
   const duration = isLoaded ? formatTime(audioRef.current.duration) : '00:00'
 
   const changeCurrentTime = (event)=> {
@@ -111,19 +112,6 @@ function App() {
     audioRef.current.currentTime = newTime
   }
 
-
-  useEffect(() => {
-    volumeRef.current.value = volume
-  }, [volume]);
-
-
-  // console.log('songsList.length', songsList.length)
-  // console.log('currentSong', currentSongIndex)
-  // console.log('now playing---', songsList[currentSongIndex].artist, songsList[currentSongIndex].title)
-  // console.log('currentDisplayTime', currentDisplayTime)
-
-
-
   return (
     <div className="App">
       <header className="App-header">
@@ -131,24 +119,21 @@ function App() {
         <Playlist
           songsList={songsList}
           currentSongIndex={currentSongIndex}
+          setCurrentSongIndex={setCurrentSongIndex}
+          play={play}
         />
-        {/*{songsList.map((song, id) => (*/}
-        {/*  <div key={id}>*/}
-        {/*    {song.artist} - {song.title}*/}
-        {/*  </div>*/}
-        {/*))}*/}
         <p>{songsList[currentSongIndex].artist} - {songsList[currentSongIndex].title}</p>
         <p>{currentDisplayTime} / {duration}</p>
         <audio ref={audioRef}
                // onVolumeChange={handleVolumeChange}
                onLoadedMetadata={handleLoadAudio}
                onTimeUpdate={handleTimeUpdate}
-               controls
                src={songsList[currentSongIndex].src}>
         </audio>
         <div className='progressBar' onClick={changeCurrentTime}>
           <div className='progress' style={{width: `${progressWidth}%`}}></div>
         </div>
+        <div>
         {played ? (
           <button onClick={pause}>pause</button>
         ) : (
@@ -158,14 +143,11 @@ function App() {
         <button onClick={next}>next</button>
         <button onClick={prev}>prev</button>
         <button onClick={mute}>mute</button>
-        <input
-          ref={volumeRef}
-          type="range"
-          min="0"
-          max="1"
-          step="0.1"
+        </div>
+
+        <VolumeSlider
           value={volume}
-          onChange={(e)=>handleVolumeChange(e)}
+          setValue={(e)=>handleVolumeChange(e)}
         />
       </header>
     </div>
